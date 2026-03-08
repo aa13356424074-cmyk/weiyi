@@ -9,17 +9,13 @@
 <body>
 
 
-  <!-- ============================================================
-    导航栏
-    注意：当前页为"产品展示"，因此 products.html 的链接保留 class="active"
-    其余页面的 <a> 标签不加 active
-  ============================================================ -->
+
   <header class="nav">
 
-    <!-- 品牌 Logo -->
+
     <div class="nav-logo">WEIYI <em>唯意</em></div>
 
-    <!-- 导航链接组 -->
+
     <nav class="nav-links">
       <a href="index.html">首页</a>
       <a href="about.html">品牌故事</a>
@@ -33,93 +29,68 @@
   <main>
 
 
-    <!-- ============================================================
-      页面顶部横幅
-      修改页面标题：修改 <h2> 内的文字
-      修改背景颜色：在 style.css 的 .page-banner 里修改 background
-      修改横幅高度：在 style.css 的 .page-banner 里修改 height
-    ============================================================ -->
+
     <div class="page-banner">
       <h2>产品展示</h2>
     </div>
 
 
-    <!-- ============================================================
-      产品展示主体区
-    ============================================================ -->
+
     <section class="products-section">
 
 
-      <!-- ============================================================
-        产品分类 Tab 筛选栏
-        新增分类步骤：
-          1. 在此处复制一个 <button> 并修改文字
-          2. 将 onclick 里的分类名改为新分类的英文标识
-             例如：onclick="filterProducts('ring', this)"
-          3. 在对应产品卡片上加 data-category="ring"
-        默认选中"全部"：第一个按钮保留 class="active"
-      ============================================================ -->
+
       <div class="product-tabs" id="productTabs">
 
-        <!-- 全部（默认选中） -->
+    
         <button class="active" onclick="filterProducts('all', this)">全部</button>
 
-        <!-- 手链分类 -->
+
         <button onclick="filterProducts('bracelet', this)">手链</button>
 
-        <!-- 项链分类 -->
+
         <button onclick="filterProducts('necklace', this)">项链</button>
 
-        <!-- 情侣款分类 -->
+
         <button onclick="filterProducts('couple', this)">情侣款</button>
 
-        <!-- 新增分类：复制上方一个 button 粘贴到此处并修改 -->
+
 
       </div>
 
 
-      <!-- ============================================================
-        产品卡片网格
-        新增产品步骤：
-          1. 复制下方一个完整的 product-item 块
-          2. 修改 data-category 为对应分类英文标识
-          3. 替换图片：取消 img 标签注释并修改路径
-          4. 修改产品名称和描述文字
-        删除产品：直接删除对应的 product-item 块
-        修改列数：在 style.css 的 .products-grid 里修改
-                  grid-template-columns 的列数
-      ============================================================ -->
+
       <div class="products-grid" id="productsGrid">
 
 
-        <!-- ====== 手链系列 ====== -->
+    
 
-        <!-- 手链 01 -->
+
         <div class="product-item" data-category="bracelet">
           <div class="product-item-thumb">
-            <!-- 替换为真实图片：<img src="images/bracelet-01.jpg" alt="手链 01" /> -->
+
             产品图片
           </div>
-          <!-- 修改产品名称 -->
+
           <h3>手链产品 01</h3>
-          <!-- 修改产品描述，如材质、工艺 -->
+
           <p>材质 · 工艺简介</p>
         </div>
 
-        <!-- 手链 02 -->
+
         <div class="product-item" data-category="bracelet">
           <div class="product-item-thumb">
-            <!-- <img src="images/bracelet-02.jpg" alt="手链 02" /> -->
+
             产品图片
           </div>
           <h3>手链产品 02</h3>
           <p>材质 · 工艺简介</p>
         </div>
 
-        <!-- 手链 03 -->
+
         <div class="product-item" data-category="bracelet">
           <div class="product-item-thumb">
-            <!-- <img src="images/bracelet-03.jpg" alt="手链 03" /> -->
+
             产品图片
           </div>
           <h3>手链产品 03</h3>
@@ -127,32 +98,32 @@
         </div>
 
 
-        <!-- ====== 项链系列 ====== -->
 
-        <!-- 项链 01 -->
+
+
         <div class="product-item" data-category="necklace">
           <div class="product-item-thumb">
-            <!-- <img src="images/necklace-01.jpg" alt="项链 01" /> -->
+
             产品图片
           </div>
           <h3>项链产品 01</h3>
           <p>材质 · 工艺简介</p>
         </div>
 
-        <!-- 项链 02 -->
+
         <div class="product-item" data-category="necklace">
           <div class="product-item-thumb">
-            <!-- <img src="images/necklace-02.jpg" alt="项链 02" /> -->
+          
             产品图片
           </div>
           <h3>项链产品 02</h3>
           <p>材质 · 工艺简介</p>
         </div>
 
-        <!-- 项链 03 -->
+    
         <div class="product-item" data-category="necklace">
           <div class="product-item-thumb">
-            <!-- <img src="images/necklace-03.jpg" alt="项链 03" /> -->
+      
             产品图片
           </div>
           <h3>项链产品 03</h3>
@@ -160,39 +131,35 @@
         </div>
 
 
-        <!-- ====== 情侣款系列 ====== -->
+     
 
-        <!-- 情侣款 01 -->
+   
         <div class="product-item" data-category="couple">
           <div class="product-item-thumb">
-            <!-- <img src="images/couple-01.jpg" alt="情侣款 01" /> -->
+   
             产品图片
           </div>
           <h3>情侣款 01</h3>
           <p>材质 · 工艺简介</p>
         </div>
 
-        <!-- 情侣款 02 -->
+
         <div class="product-item" data-category="couple">
           <div class="product-item-thumb">
-            <!-- <img src="images/couple-02.jpg" alt="情侣款 02" /> -->
+          
             产品图片
           </div>
           <h3>情侣款 02</h3>
           <p>材质 · 工艺简介</p>
         </div>
 
-        <!-- 新增产品：复制上方一个完整 product-item 块粘贴到此处 -->
+   
 
       </div>
     </section>
 
 
-    <!-- ============================================================
-      小红书引导条
-      修改引导文字：修改 <p> 内的文字
-      修改跳转链接：修改 <a> 的 href 属性
-    ============================================================ -->
+
     <div class="xhs-strip">
       <p>想看更多搭配灵感？</p>
       <a href="https://www.xiaohongshu.com/user/profile/63bbd09d00000000260107a7"
@@ -205,11 +172,7 @@
   </main>
 
 
-  <!-- ============================================================
-    页脚
-    修改版权年份：修改 © 后面的年份
-    修改联系方式：修改最后一个 <div> 内的文字
-  ============================================================ -->
+
   <footer class="footer">
     <div class="footer-logo">WEIYI 唯意</div>
     <div>© 2024 WEIYI 唯意 · 保留所有权利</div>
@@ -218,33 +181,25 @@
   </footer>
 
 
-  <!-- ============================================================
-    产品分类筛选 JavaScript
-    工作原理：
-      点击 Tab 按钮时，遍历所有产品卡片，
-      对比卡片的 data-category 属性与点击的分类名，
-      匹配则显示，不匹配则隐藏
-    新增分类：只需在 HTML 里添加按钮和对应 data-category，
-              无需修改此脚本
-  ============================================================ -->
+
   <script>
     function filterProducts(category, btn) {
 
-      /* 第一步：移除所有 Tab 按钮的 active 高亮 */
+
       document.querySelectorAll('#productTabs button').forEach(function (b) {
         b.classList.remove('active');
       });
 
-      /* 第二步：给当前点击的按钮加上 active 高亮 */
+   
       btn.classList.add('active');
 
-      /* 第三步：遍历所有产品卡片，根据分类决定显示或隐藏 */
+
       document.querySelectorAll('#productsGrid .product-item').forEach(function (item) {
         if (category === 'all' || item.dataset.category === category) {
-          /* 分类匹配或选择"全部"：显示该产品 */
+
           item.style.display = 'block';
         } else {
-          /* 分类不匹配：隐藏该产品 */
+
           item.style.display = 'none';
         }
       });

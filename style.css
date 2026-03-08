@@ -1,39 +1,27 @@
-/* ============================================================
-   WEIYI 唯意 | 品牌官网样式表
-   风格：黑银冷峻 · 极简高级 · 首饰品牌
-   使用说明：所有颜色、字体、间距均通过顶部变量统一控制，
-   修改时只需调整 :root 里的变量值即可全站生效
-   ============================================================ */
 
 
-/* ============================================================
-   【1】全局变量
-   修改这里可以快速调整全站的颜色、字体、导航高度
-   ============================================================ */
+
+
 :root {
-  --black: #0a0a0a;          /* 主色：深黑，用于文字、背景、按钮 */
-  --white: #ffffff;          /* 纯白，用于背景和反白文字 */
-  --gray-light: #f4f4f4;     /* 浅灰，用于卡片背景、区块底色 */
-  --gray-mid: #999999;       /* 中灰，用于副标题、占位文字 */
-  --gray-border: #e0e0e0;    /* 边框灰，用于分割线和边框 */
-  --nav-height: 78px;        /* 导航栏高度，修改这里会同步影响页面偏移 */
-  --font: 'Helvetica Neue', Helvetica, 'PingFang SC', sans-serif; /* 全站字体 */
-  --ease: all 0.4s ease;     /* 全站统一过渡动画速度，可调整秒数 */
+  --black: #0a0a0a;         
+  --white: #ffffff;          
+  --gray-light: #f4f4f4;     
+  --gray-mid: #999999;      
+  --gray-border: #e0e0e0;
+  --nav-height: 78px;        
+  --font: 'Helvetica Neue', Helvetica, 'PingFang SC', sans-serif; 
+  --ease: all 0.4s ease;   
 }
 
 
-/* ============================================================
-   【2】基础重置
-   清除浏览器默认样式，保证跨浏览器一致性
-   ============================================================ */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* 让 padding 不撑大元素宽度 */
+  box-sizing: border-box; 
 }
 
 html {
-  scroll-behavior: smooth; /* 页面内锚点跳转时平滑滚动 */
+  scroll-behavior: smooth; 
 }
 
 body {
@@ -41,56 +29,52 @@ body {
   color: var(--black);
   background: var(--white);
   line-height: 1.8;
-  -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上渲染更细腻 */
+  -webkit-font-smoothing: antialiased; 
 }
 
 a {
-  text-decoration: none; /* 去掉链接下划线 */
-  color: inherit;        /* 链接颜色继承父元素 */
+  text-decoration: none;
+  color: inherit;        
 }
 
 img {
-  display: block;    /* 去掉图片底部空白间隙 */
-  max-width: 100%;   /* 图片不超出容器宽度 */
+  display: block;    
+  max-width: 100%; 
 }
 
 button {
-  font-family: var(--font); /* 按钮字体统一 */
+  font-family: var(--font);
   cursor: pointer;
 }
 
 
-/* ============================================================
-   【3】导航栏
-   固定在页面顶部，始终可见
-   修改 --nav-height 变量可同步调整导航栏高度
-   ============================================================ */
+
 .nav {
-  position: fixed;       /* 固定定位，不随页面滚动 */
+  position: fixed;       
   top: 0;
   left: 0;
   width: 100%;
   height: var(--nav-height);
-  background: rgba(255, 255, 255, 0.96); /* 半透明白底，配合毛玻璃效果 */
-  backdrop-filter: blur(8px);            /* 毛玻璃模糊效果 */
+  background: rgba(255, 255, 255, 0.96); 
+  backdrop-filter: blur(8px);       
   border-bottom: 1px solid var(--gray-border);
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Logo 左，导航链接右 */
-  padding: 0 6%;                  /* 左右留白，修改百分比可调整页面边距 */
-  z-index: 1000;                  /* 确保导航栏在所有内容之上 */
+  justify-content: space-between; 
+  padding: 0 6%;              
+  z-index: 1000;              
 }
 
-/* 品牌 Logo 文字 */
+
 .nav-logo {
   font-size: 24px;
   font-weight: 700;
-  letter-spacing: 5px;   /* 字间距营造高级感，可适当调整 */
+  letter-spacing: 5px;   
   color: var(--black);
   text-transform: uppercase;
 }
 
-/* Logo 旁的中文副标题"唯意" */
+
 .nav-logo em {
   font-style: normal;
   font-weight: 300;
@@ -100,116 +84,103 @@ button {
   margin-left: 10px;
 }
 
-/* 导航链接 */
+
 .nav-links a {
   font-size: 15px;
   letter-spacing: 2px;
   color: var(--gray-mid);
   text-transform: uppercase;
-  margin-left: 40px;     /* 链接之间的间距，可调整 */
+  margin-left: 40px;     
   transition: var(--ease);
 }
 
-/* 导航链接：悬停和当前页高亮 */
+
 .nav-links a:hover,
 .nav-links a.active {
   color: var(--black);
 }
 
-/* 页面主体向下偏移，避免被固定导航栏遮挡 */
+
 main {
   padding-top: var(--nav-height);
 }
 
 
-/* ============================================================
-   【4】首页 · 全屏 Hero Banner
-   占满屏幕高度，文字内容靠左下角排列
-   替换背景图片：在 .hero-bg 里添加 img 标签即可
-   ============================================================ */
+
 .hero {
   position: relative;
   width: 100%;
-  height: calc(100vh - var(--nav-height)); /* 减去导航栏高度 */
-  background: #1a1a1a;   /* 无图片时的占位背景色，有图片后可删除 */
+  height: calc(100vh - var(--nav-height));
+  background: #1a1a1a;  
   display: flex;
-  align-items: flex-end; /* 文字内容靠底部排列 */
+  align-items: flex-end; 
   overflow: hidden;
 }
 
-/* 背景图片容器 */
+
 .hero-bg {
   position: absolute;
-  inset: 0;       /* 等同于 top/right/bottom/left 全为 0 */
+  inset: 0;       
   overflow: hidden;
 }
 
-/* 背景图片样式（有图片时取消注释使用） */
+
 .hero-bg img {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* 图片裁剪填满容器，不变形 */
-  opacity: 0.7;       /* 图片透明度，数值越小越暗，可调整 */
+  object-fit: cover;
+  opacity: 0.7;     
 }
 
-/* Hero 文字内容区 */
+
 .hero-content {
   position: relative;
-  z-index: 2;          /* 确保文字在背景图之上 */
-  padding: 0 6% 8%;    /* 底部留白控制文字距底部距离 */
+  z-index: 2;        
+  padding: 0 6% 8%;    
   color: var(--white);
 }
 
-/* Hero 主标题 */
+
 .hero-content h1 {
-  font-size: clamp(40px, 7vw, 96px); /* 响应式字号：最小40px，最大96px */
+  font-size: clamp(40px, 7vw, 96px); 
   font-weight: 600;
-  letter-spacing: 12px;  /* 大字间距，营造品牌张力 */
+  letter-spacing: 12px; 
   text-transform: uppercase;
   line-height: 1.05;
   margin-bottom: 24px;
   color: var(--white);
 }
 
-/* Hero 副标题 */
+
 .hero-content p {
   font-size: 13px;
   font-weight: 300;
   letter-spacing: 6px;
-  color: rgba(255, 255, 255, 0.55); /* 半透明白色 */
+  color: rgba(255, 255, 255, 0.55);
 }
 
 
-/* ============================================================
-   【5】首页 · 品牌一句话介绍
-   位于 Hero 下方，用于简短说明品牌定位
-   修改 max-width 可控制文字最大宽度
-   ============================================================ */
+
 .brand-intro {
-  padding: 100px 6%; /* 上下留白，营造呼吸感 */
+  padding: 100px 6%; 
 }
 
 .brand-intro p {
   font-size: 20px;
-  font-weight: 300;   /* 细体字，配合高级感 */
+  font-weight: 300;   
   line-height: 2.2;
   letter-spacing: 1px;
   color: var(--black);
-  max-width: 860px;   /* 限制文字宽度，避免一行太长 */
+  max-width: 860px;   
 }
 
 
-/* ============================================================
-   【6】通用区块标题组
-   用于各区块顶部的标题 + 英文副标题组合
-   在 HTML 中使用 <div class="section-head"> 调用
-   ============================================================ */
 .section-head {
   padding: 0 6%;
-  margin-bottom: 56px; /* 标题与内容之间的间距 */
+  margin-bottom: 56px;
 }
 
-/* 中文主标题 */
+
 .section-head h2 {
   font-size: 13px;
   font-weight: 600;
@@ -219,7 +190,7 @@ main {
   margin-bottom: 6px;
 }
 
-/* 英文副标题 */
+
 .section-head span {
   font-size: 12px;
   letter-spacing: 3px;
@@ -227,52 +198,48 @@ main {
 }
 
 
-/* ============================================================
-   【7】首页 · 产品轮播图
-   支持左右切换和自动轮播
-   修改 .carousel-item 的 height 可调整轮播图高度
-   ============================================================ */
+
 .carousel-section {
   background: var(--gray-light);
   padding: 80px 0 60px;
 }
 
-/* 轮播容器，超出部分隐藏 */
+
 .carousel-wrap {
   position: relative;
   overflow: hidden;
 }
 
-/* 轮播滑动轨道，所有图片横向排列 */
+
 .carousel-track {
   display: flex;
-  transition: transform 0.6s cubic-bezier(0.77, 0, 0.18, 1); /* 滑动动画曲线 */
+  transition: transform 0.6s cubic-bezier(0.77, 0, 0.18, 1); 
   will-change: transform;
 }
 
-/* 单张轮播图 */
+
 .carousel-item {
-  min-width: 100%;     /* 每张图占满容器宽度 */
-  height: 560px;       /* 轮播图高度，可修改 */
-  background: #222;    /* 无图片时的占位背景色 */
+  min-width: 100%;     
+  height: 560px;       
+  background: #222;    
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--gray-mid);
   font-size: 13px;
   letter-spacing: 3px;
-  flex-shrink: 0;      /* 防止图片被压缩 */
+  flex-shrink: 0;    
   overflow: hidden;
 }
 
-/* 轮播图片样式 */
+
 .carousel-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* 轮播控制区：左右按钮 + 指示点 */
+
 .carousel-controls {
   display: flex;
   align-items: center;
@@ -280,7 +247,7 @@ main {
   padding: 28px 6% 0;
 }
 
-/* 左右切换按钮 */
+
 .carousel-btn {
   width: 48px;
   height: 48px;
@@ -295,24 +262,24 @@ main {
   flex-shrink: 0;
 }
 
-/* 按钮悬停效果：反色 */
+
 .carousel-btn:hover {
   background: var(--black);
   color: var(--white);
   border-color: var(--black);
 }
 
-/* 指示点容器，靠右对齐 */
+
 .carousel-dots {
   display: flex;
   gap: 8px;
-  margin-left: auto; /* 推到最右侧 */
+  margin-left: auto; 
 }
 
-/* 单个指示点（线条形） */
+
 .carousel-dots button {
   width: 32px;
-  height: 2px;       /* 线条形比圆点更高级 */
+  height: 2px;    
   background: var(--gray-border);
   border: none;
   padding: 0;
@@ -320,36 +287,32 @@ main {
   cursor: pointer;
 }
 
-/* 当前激活的指示点 */
+
 .carousel-dots button.active {
   background: var(--black);
 }
 
 
-/* ============================================================
-   【8】首页 · 精选产品卡片
-   3列网格布局，卡片为竖版比例（4:5）
-   新增产品：在 HTML 的 picks-grid 里复制一个 pick-card 即可
-   ============================================================ */
+
 .picks-section {
   padding: 100px 6%;
 }
 
-/* 3列网格 */
+
 .picks-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3列，修改数字可改变列数 */
-  gap: 48px 32px; /* 行间距 列间距 */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 48px 32px;
 }
 
 .pick-card {
   cursor: pointer;
 }
 
-/* 产品图片容器，竖版比例 */
+
 .pick-card-thumb {
   width: 100%;
-  aspect-ratio: 4 / 5;  /* 竖版比例，适合首饰模特图 */
+  aspect-ratio: 4 / 5;  
   background: var(--gray-light);
   overflow: hidden;
   margin-bottom: 20px;
@@ -361,7 +324,7 @@ main {
   letter-spacing: 2px;
 }
 
-/* 产品图片 */
+
 .pick-card-thumb img {
   width: 100%;
   height: 100%;
@@ -369,12 +332,12 @@ main {
   transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 悬停时图片缓慢放大 */
+
 .pick-card:hover .pick-card-thumb img {
   transform: scale(1.06);
 }
 
-/* 产品名称 */
+
 .pick-card h3 {
   font-size: 14px;
   font-weight: 500;
@@ -383,7 +346,7 @@ main {
   color: var(--black);
 }
 
-/* 产品描述 */
+
 .pick-card p {
   font-size: 12px;
   color: var(--gray-mid);
@@ -391,11 +354,7 @@ main {
 }
 
 
-/* ============================================================
-   【9】小红书引导条
-   黑底白字，用于引导用户跳转小红书
-   修改链接地址：在 HTML 对应的 <a> 标签里修改 href
-   ============================================================ */
+
 .xhs-strip {
   background: var(--black);
   padding: 80px 6%;
@@ -433,11 +392,7 @@ main {
 }
 
 
-/* ============================================================
-   【10】页脚
-   三列布局：Logo · 版权信息 · 联系方式
-   修改内容：在 HTML 对应的 footer 标签里修改文字
-   ============================================================ */
+
 .footer {
   border-top: 1px solid var(--gray-border);
   padding: 48px 6%;
@@ -449,7 +404,7 @@ main {
   letter-spacing: 1px;
 }
 
-/* 页脚 Logo */
+
 .footer-logo {
   font-size: 15px;
   font-weight: 700;
@@ -458,11 +413,7 @@ main {
 }
 
 
-/* ============================================================
-   【11】内页通用 · 顶部横幅
-   用于品牌故事、产品展示、联系我们等内页的顶部大标题区
-   修改 height 可调整横幅高度
-   ============================================================ */
+
 .page-banner {
   height: 300px;
   background: var(--black);
@@ -471,7 +422,7 @@ main {
   padding: 0 6% 56px;
 }
 
-/* 页面大标题 */
+
 .page-banner h2 {
   font-size: clamp(28px, 4vw, 52px); /* 响应式字号 */
   font-weight: 600;
@@ -481,11 +432,6 @@ main {
 }
 
 
-/* ============================================================
-   【12】品牌故事页 · 双栏文字区
-   左右各一栏，中间有分割线
-   新增栏目：复制一个 about-col 并修改内容即可
-   ============================================================ */
 .about-body {
   display: grid;
   grid-template-columns: 1fr 1fr; /* 两列等宽 */
@@ -522,18 +468,14 @@ main {
 }
 
 
-/* ============================================================
-   【13】品牌故事页 · Slogan 视觉强调块
-   黑底白字，用于突出展示品牌核心理念
-   修改文字：在 HTML 对应的 slogan-block 里修改
-   ============================================================ */
+
 .slogan-block {
   background: var(--black);
   padding: 120px 6%;
   text-align: center;
 }
 
-/* Slogan 主文字 */
+
 .slogan-block h2 {
   font-size: clamp(22px, 3.5vw, 48px);
   font-weight: 300;
@@ -543,7 +485,7 @@ main {
   margin-bottom: 24px;
 }
 
-/* Slogan 副文字 */
+
 .slogan-block p {
   font-size: 12px;
   letter-spacing: 6px;
@@ -552,11 +494,7 @@ main {
 }
 
 
-/* ============================================================
-   【14】产品展示页 · 分类 Tab
-   点击 Tab 可筛选对应分类的产品
-   新增分类：在 HTML 里添加按钮，并给产品卡片加对应 data-category
-   ============================================================ */
+
 .products-section {
   padding: 80px 6%;
 }
@@ -572,13 +510,13 @@ main {
 .product-tabs button {
   background: none;
   border: none;
-  border-bottom: 2px solid transparent; /* 默认底部线透明 */
+  border-bottom: 2px solid transparent; 
   padding: 16px 32px;
   font-size: 12px;
   letter-spacing: 2px;
   color: var(--gray-mid);
   text-transform: uppercase;
-  margin-bottom: -1px; /* 覆盖容器底部分割线 */
+  margin-bottom: -1px; 
   transition: var(--ease);
 }
 
@@ -590,11 +528,7 @@ main {
 }
 
 
-/* ============================================================
-   【15】产品展示页 · 产品网格
-   4列布局，竖版图片比例
-   新增产品：在 HTML 的 products-grid 里复制一个 product-item
-   ============================================================ */
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4列，可修改数字 */
@@ -650,23 +584,20 @@ main {
 }
 
 
-/* ============================================================
-   【16】联系页 · 左右双栏布局
-   左栏：联系方式信息；右栏：留言表单
-   ============================================================ */
+
 .contact-section {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 左右各占一半 */
+  grid-template-columns: 1fr 1fr;
 }
 
-/* 左栏：联系信息 */
+
 .contact-info {
   padding: 100px 6%;
   background: var(--gray-light);
   border-right: 1px solid var(--gray-border);
 }
 
-/* 联系信息和表单共用的小标题样式 */
+
 .contact-info h3,
 .contact-form h3 {
   font-size: 11px;
@@ -682,7 +613,7 @@ main {
   margin-bottom: 36px;
 }
 
-/* 联系信息标签（如"微信"、"邮箱"） */
+
 .contact-info-item label {
   display: block;
   font-size: 11px;
@@ -692,14 +623,14 @@ main {
   margin-bottom: 8px;
 }
 
-/* 联系信息内容 */
+
 .contact-info-item p {
   font-size: 15px;
   color: var(--black);
   letter-spacing: 1px;
 }
 
-/* 社交媒体链接区 */
+
 .contact-social {
   margin-top: 56px;
 }
@@ -743,7 +674,7 @@ main {
 .form-field textarea {
   width: 100%;
   border: none;
-  border-bottom: 1px solid var(--gray-border); /* 只有底部线，极简风格 */
+  border-bottom: 1px solid var(--gray-border); 
   padding: 12px 0;
   font-size: 14px;
   font-family: var(--font);
@@ -785,92 +716,75 @@ main {
 }
 
 
-/* ============================================================
-   【17】响应式适配
-   针对不同屏幕宽度调整布局
-   992px：平板横屏
-   768px：平板竖屏 / 大手机
-   480px：小手机
-   ============================================================ */
 
-/* 平板：产品网格改为3列 */
+
+
 @media (max-width: 1024px) {
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* 平板竖屏 / 大手机 */
+
 @media (max-width: 768px) {
-  /* 导航栏收窄 */
+
   .nav { padding: 0 5%; }
   .nav-links a { margin-left: 20px; font-size: 11px; }
 
-  /* 精选产品改为2列 */
+
   .picks-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 16px; }
 
-  /* 品牌故事改为单列 */
+
   .about-body { grid-template-columns: 1fr; }
   .about-col { border-right: none; border-bottom: 1px solid var(--gray-border); padding: 60px 5%; }
   .about-col:last-child { border-bottom: none; }
 
-  /* 产品网格改为2列 */
+
   .products-grid { grid-template-columns: repeat(2, 1fr); }
 
-  /* 联系页改为单列 */
+ 
   .contact-section { grid-template-columns: 1fr; }
   .contact-info { border-right: none; border-bottom: 1px solid var(--gray-border); padding: 60px 5%; }
   .contact-form { padding: 60px 5%; }
 
-  /* 小红书引导条改为竖向排列 */
+
   .xhs-strip { flex-direction: column; text-align: center; }
 
-  /* 页脚改为竖向排列 */
+
   .footer { flex-direction: column; gap: 16px; text-align: center; }
 }
 
-/* 小手机 */
+
 @media (max-width: 480px) {
-  /* 精选产品改为单列 */
+
   .picks-grid { grid-template-columns: 1fr; }
 
-  /* 产品网格保持2列 */
+
   .products-grid { grid-template-columns: repeat(2, 1fr); }
 
-  /* Tab 按钮缩小间距 */
+ 
   .product-tabs button { padding: 14px 16px; }
 }
 
-/* ============================================================
-   【手机版最终修正块】
-   作用：
-   1. 修复导航栏文字换行、不美观的问题
-   2. 修复轮播图超宽、第一张显示不全、第二张重叠的问题
-   使用方式：
-   - 直接整段复制
-   - 粘贴到 style.css 文件最底部
-   - 保存后刷新页面查看效果
-============================================================ */
+
 @media (max-width: 768px) {
 
-  /* =========================
-     1）导航栏防换行修正
-  ========================= */
+ 
 
-  /* 缩小导航整体左右留白 */
+
   .nav {
     padding: 0 4%;
   }
 
-  /* 缩小 Logo，避免占用过多横向空间 */
+
   .nav-logo {
     font-size: 15px;
     letter-spacing: 2px;
-    white-space: nowrap; /* 强制不换行 */
-    flex-shrink: 0;      /* 防止被压缩 */
+    white-space: nowrap; 
+    flex-shrink: 0;   
   }
 
-  /* 缩小 Logo 中的中文副标题 */
+
   .nav-logo em {
     font-size: 9px;
     margin-left: 6px;
@@ -878,40 +792,37 @@ main {
     white-space: nowrap;
   }
 
-  /* 导航链接整体保持一行 */
+
   .nav-links {
     display: flex;
     align-items: center;
-    flex-wrap: nowrap;   /* 不允许换行 */
-    overflow: hidden;    /* 防止内容撑出 */
+    flex-wrap: nowrap;  
+    overflow: hidden;
   }
 
-  /* 缩小每个导航链接 */
   .nav-links a {
     font-size: 10px;
     margin-left: 12px;
     letter-spacing: 1px;
-    white-space: nowrap; /* 单个链接不换行 */
+    white-space: nowrap; 
     flex-shrink: 0;
   }
 
-  /* =========================
-     2）轮播图手机端布局修正
-  ========================= */
 
-  /* 整个轮播区域裁掉超出的内容 */
+
+
   .carousel-section {
     overflow: hidden;
     padding: 56px 0 40px;
   }
 
-  /* 缩小轮播区标题与轮播图之间的距离 */
+
   .carousel-section .section-head {
     padding: 0 5%;
     margin-bottom: 28px;
   }
 
-  /* 手机端标题微调 */
+
   .carousel-section .section-head h2 {
     font-size: 12px;
     letter-spacing: 3px;
@@ -922,25 +833,25 @@ main {
     letter-spacing: 2px;
   }
 
-  /* 轮播容器必须锁死宽度，防止撑出屏幕 */
+  
   .carousel-wrap {
     width: 100%;
     overflow: hidden;
   }
 
-  /* 轮播轨道横向排列，不换行 */
+
   .carousel-track {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
   }
 
-  /* 每张轮播图严格等于一屏宽，防止重叠和显示不全 */
+
   .carousel-item {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
-    flex: 0 0 100%;      /* 关键：每张固定占100%宽度 */
+    flex: 0 0 100%;      
     height: 300px;
     box-sizing: border-box;
     overflow: hidden;
@@ -948,41 +859,37 @@ main {
     letter-spacing: 2px;
   }
 
-  /* 图片严格填满单张轮播图 */
+
   .carousel-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /* 控制区紧凑化 */
+
   .carousel-controls {
     padding: 20px 5% 0;
     gap: 10px;
   }
 
-  /* 左右按钮缩小 */
+
   .carousel-btn {
     width: 40px;
     height: 40px;
     font-size: 16px;
   }
 
-  /* 指示点缩短 */
+
   .carousel-dots button {
     width: 20px;
   }
 }
 
 
-/* ============================================================
-   【小屏手机进一步修正】
-   适用范围：宽度 480px 及以下
-   作用：让更小的手机屏幕显示更紧凑
-============================================================ */
+
 @media (max-width: 480px) {
 
-  /* 导航栏进一步压缩 */
+
   .nav {
     padding: 0 3.5%;
   }
@@ -1003,7 +910,7 @@ main {
     letter-spacing: 0.5px;
   }
 
-  /* 轮播区进一步缩小 */
+
   .carousel-section {
     padding: 48px 0 32px;
   }
