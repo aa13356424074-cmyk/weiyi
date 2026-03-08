@@ -840,3 +840,193 @@ main {
   /* Tab 按钮缩小间距 */
   .product-tabs button { padding: 14px 16px; }
 }
+
+/* ============================================================
+   【手机版最终修正块】
+   作用：
+   1. 修复导航栏文字换行、不美观的问题
+   2. 修复轮播图超宽、第一张显示不全、第二张重叠的问题
+   使用方式：
+   - 直接整段复制
+   - 粘贴到 style.css 文件最底部
+   - 保存后刷新页面查看效果
+============================================================ */
+@media (max-width: 768px) {
+
+  /* =========================
+     1）导航栏防换行修正
+  ========================= */
+
+  /* 缩小导航整体左右留白 */
+  .nav {
+    padding: 0 4%;
+  }
+
+  /* 缩小 Logo，避免占用过多横向空间 */
+  .nav-logo {
+    font-size: 15px;
+    letter-spacing: 2px;
+    white-space: nowrap; /* 强制不换行 */
+    flex-shrink: 0;      /* 防止被压缩 */
+  }
+
+  /* 缩小 Logo 中的中文副标题 */
+  .nav-logo em {
+    font-size: 9px;
+    margin-left: 6px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  /* 导航链接整体保持一行 */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;   /* 不允许换行 */
+    overflow: hidden;    /* 防止内容撑出 */
+  }
+
+  /* 缩小每个导航链接 */
+  .nav-links a {
+    font-size: 10px;
+    margin-left: 12px;
+    letter-spacing: 1px;
+    white-space: nowrap; /* 单个链接不换行 */
+    flex-shrink: 0;
+  }
+
+  /* =========================
+     2）轮播图手机端布局修正
+  ========================= */
+
+  /* 整个轮播区域裁掉超出的内容 */
+  .carousel-section {
+    overflow: hidden;
+    padding: 56px 0 40px;
+  }
+
+  /* 缩小轮播区标题与轮播图之间的距离 */
+  .carousel-section .section-head {
+    padding: 0 5%;
+    margin-bottom: 28px;
+  }
+
+  /* 手机端标题微调 */
+  .carousel-section .section-head h2 {
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+
+  .carousel-section .section-head span {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  /* 轮播容器必须锁死宽度，防止撑出屏幕 */
+  .carousel-wrap {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* 轮播轨道横向排列，不换行 */
+  .carousel-track {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  /* 每张轮播图严格等于一屏宽，防止重叠和显示不全 */
+  .carousel-item {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;      /* 关键：每张固定占100%宽度 */
+    height: 300px;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  /* 图片严格填满单张轮播图 */
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 控制区紧凑化 */
+  .carousel-controls {
+    padding: 20px 5% 0;
+    gap: 10px;
+  }
+
+  /* 左右按钮缩小 */
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  /* 指示点缩短 */
+  .carousel-dots button {
+    width: 20px;
+  }
+}
+
+
+/* ============================================================
+   【小屏手机进一步修正】
+   适用范围：宽度 480px 及以下
+   作用：让更小的手机屏幕显示更紧凑
+============================================================ */
+@media (max-width: 480px) {
+
+  /* 导航栏进一步压缩 */
+  .nav {
+    padding: 0 3.5%;
+  }
+
+  .nav-logo {
+    font-size: 14px;
+    letter-spacing: 1.5px;
+  }
+
+  .nav-logo em {
+    font-size: 8px;
+    margin-left: 4px;
+  }
+
+  .nav-links a {
+    font-size: 9px;
+    margin-left: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  /* 轮播区进一步缩小 */
+  .carousel-section {
+    padding: 48px 0 32px;
+  }
+
+  .carousel-item {
+    height: 240px;
+  }
+
+  .carousel-controls {
+    padding: 16px 5% 0;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .carousel-dots {
+    gap: 6px;
+  }
+
+  .carousel-dots button {
+    width: 18px;
+  }
+}
