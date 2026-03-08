@@ -120,47 +120,54 @@
         注意：此表单为静态展示，提交按钮点击后无实际后台处理
               如需真实提交功能，需对接后端服务或第三方表单服务
       ============================================================ -->
-      <div class="contact-form">
+     <!-- 右栏：留言表单 -->
+<div class="contact-form">
+  <h3>留言咨询(点击提交后自动跳转至邮箱)</h3>
 
-        <!-- 右栏标题 -->
-        <h3>留言咨询</h3>
+  <div class="form-field">
+    <label>您的姓名</label>
+    <input type="text" id="contactName" placeholder="请输入姓名" />
+  </div>
 
-        <!-- 表单字段：姓名 -->
-        <div class="form-field">
-          <!-- 字段标签 -->
-          <label>您的姓名</label>
-          <!-- 单行输入框，修改 placeholder 为提示文字 -->
-          <input type="text" placeholder="请输入姓名" />
-        </div>
+  <div class="form-field">
+    <label>联系方式</label>
+    <input type="text" id="contactInfo" placeholder="微信 / 手机 / 邮箱" />
+  </div>
 
-        <!-- 表单字段：联系方式 -->
-        <div class="form-field">
-          <label>联系方式</label>
-          <input type="text" placeholder="微信 / 手机 / 邮箱" />
-        </div>
+  <div class="form-field">
+    <label>留言内容</label>
+    <textarea id="contactMessage" placeholder="请输入您的留言..."></textarea>
+  </div>
 
-        <!-- 表单字段：留言内容 -->
-        <div class="form-field">
-          <label>留言内容</label>
-          <!-- 多行文本域，修改 placeholder 为提示文字 -->
-          <!-- 修改高度：在 style.css 的 .form-field textarea 里修改 height -->
-          <textarea placeholder="请输入您的留言..."></textarea>
-        </div>
+  <button class="form-submit" type="button" id="mailToBtn">提交留言</button>
+  </div>
 
-        <!-- 新增表单字段：复制上方一个 form-field 块粘贴到此处 -->
+<script>
+  document.getElementById('mailToBtn').addEventListener('click', function () {
+    var name = document.getElementById('contactName').value.trim();
+    var contact = document.getElementById('contactInfo').value.trim();
+    var message = document.getElementById('contactMessage').value.trim();
 
-        <!-- 提交按钮 -->
-        <!-- 如需绑定提交事件：将 type="button" 改为 type="submit"
-             并给 <form> 标签添加 action 属性指向后端接口 -->
-        <button class="form-submit" type="button">提交留言</button>
+    if (!name || !contact || !message) {
+      alert('请完整填写姓名、联系方式和留言内容。');
+      return;
+    }
 
-      </div>
+    var subject = 'WEIYI 官网留言';
+    var body =
+      '姓名：' + name + '\n' +
+      '联系方式：' + contact + '\n' +
+      '留言内容：\n' + message + '\n';
 
+    var mailtoLink =
+      'mailto:contact@weiyi.com' +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
 
-    </div>
+    window.location.href = mailtoLink;
+  });
+</script>
 
-
-  </main>
 
 
   <!-- ============================================================
