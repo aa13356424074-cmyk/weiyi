@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>联系我们 | WEIYI 唯意</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav" id="siteHeader"></header>
+
+  <main>
+    <div class="page-banner page-banner-minimal">
+      <div class="page-banner-inner">
+        <p class="page-banner-kicker" id="contactBannerKicker" hidden></p>
+        <h2 id="contactBannerTitle"></h2>
+        <p class="page-banner-copy" id="contactBannerCopy" hidden></p>
+      </div>
+    </div>
+
+    <div class="contact-section">
+      <div class="contact-info">
+        <h3 id="contactInfoHeading"></h3>
+        <div id="contactInfoList"></div>
+        <div class="contact-social" id="contactSocialLinks"></div>
+      </div>
+
+      <div class="contact-form">
+        <h3 id="contactFormHeading"></h3>
+
+        <div class="form-field">
+          <label for="contactName" id="contactNameLabel"></label>
+          <input type="text" id="contactName" placeholder="" />
+        </div>
+
+        <div class="form-field">
+          <label for="contactInfoInput" id="contactMethodLabel"></label>
+          <input type="text" id="contactInfoInput" placeholder="" />
+        </div>
+
+        <div class="form-field">
+          <label for="contactMessage" id="contactMessageLabel"></label>
+          <textarea id="contactMessage" placeholder=""></textarea>
+        </div>
+
+        <button class="form-submit" type="button" id="mailToBtn"></button>
+      </div>
+    </div>
+
+    <div class="xhs-strip" id="contactXhsStrip"></div>
+  </main>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="site-content.js"></script>
+  <script src="site.js"></script>
+  <script>
+    (function () {
+      var site = window.weiyiSite;
+      var pageContent = site.getPageContent('contact');
+      var formConfig = pageContent.form || {};
+      var contactInfoList = document.getElementById('contactInfoList');
+      var contactSocialLinks = document.getElementById('contactSocialLinks');
+      var mailToBtn = document.getElementById('mailToBtn');
+
+      site.renderHeader('contact');
+      site.renderFooter();
+      site.renderXhsStrip('contactXhsStrip', pageContent.xhs);
+      site.setDocumentTitle(pageContent.title);
+      site.setText('contactBannerKicker', pageContent.bannerKicker || '');
+      site.setText('contactBannerTitle', pageContent.bannerTitle || '');
+      site.setText('contactBannerCopy', pageContent.bannerCopy || '');
+      document.getElementById('contactBannerKicker').hidden = !pageContent.bannerKicker;
+      document.getElementById('contactBannerCopy').hidden = !pageContent.bannerCopy;
+      site.setText('contactInfoHeading', pageContent.infoHeading || '');
+      site.setText('contactFormHeading', formConfig.heading || '');
+      site.setText('contactNameLabel', formConfig.nameLabel || '');
+      site.setText('contactMethodLabel', formConfig.contactLabel || '');
+      site.setText('contactMessageLabel', formConfig.messageLabel || '');
+      site.setText(mailToBtn, formConfig.submitLabel || '');
+
+      document.getElementById('contactName').placeholder = formConfig.namePlaceholder || '';
+      document.getElementById('contactInfoInput').placeholder = formConfig.contactPlaceholder || '';
+      document.getElementById('contactMessage').placeholder = formConfig.messagePlaceholder || '';
+
+      site.clearElement(contactInfoList);
+      (Array.isArray(pageContent.infoItems) ? pageContent.infoItems : []).forEach(function (item) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'contact-info-item';
+
+        var label = document.createElement('label');
+        label.textContent = item.label || '';
+
+        var value = document.createElement('p');
+        value.textContent = item.value || '';
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(value);
+        contactInfoList.appendChild(wrapper);
+      });
+
+      site.clearElement(contactSocialLinks);
+      (Array.isArray(pageContent.socialLinks) ? pageContent.socialLinks : []).forEach(function (item) {
+        var link = document.createElement('a');
+        link.href = item.href || '#';
+        link.target = '_blank';
+        link.rel = 'noreferrer';
+        link.textContent = item.label || '';
+        contactSocialLinks.appendChild(link);
+      });
+
+      mailToBtn.addEventListener('click', function () {
+        var name = document.getElementById('contactName').value.trim();
+        var contact = document.getElementById('contactInfoInput').value.trim();
+        var message = document.getElementById('contactMessage').value.trim();
+        var bodyLabels = formConfig.bodyLabels || {};
+        var recipient = formConfig.mailRecipient || '';
+
+        if (!name || !contact || !message) {
+          alert(formConfig.validationMessage || '请完整填写姓名、联系方式和留言内容。');
+          return;
+        }
+
+        var body =
+          (bodyLabels.name || '姓名：') + name + '\n' +
+          (bodyLabels.contact || '联系方式：') + contact + '\n' +
+          (bodyLabels.message || '留言内容：') + '\n' + message + '\n';
+
+        var mailtoLink =
+          'mailto:' + recipient +
+          '?subject=' + encodeURIComponent(formConfig.mailSubject || '') +
+          '&body=' + encodeURIComponent(body);
+
+        window.location.href = mailtoLink;
+      });
+    })();
+  </script>
+</body>
+</html>

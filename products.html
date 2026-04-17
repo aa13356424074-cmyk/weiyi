@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产品展示 | WEIYI 唯意</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav" id="siteHeader"></header>
+
+  <main>
+    <div class="page-banner page-banner-minimal">
+      <div class="page-banner-inner">
+        <p class="page-banner-kicker" id="productsBannerKicker" hidden></p>
+        <h2 id="productsBannerTitle"></h2>
+        <p class="page-banner-copy" id="productsBannerCopy" hidden></p>
+      </div>
+    </div>
+
+    <section class="products-section">
+      <div class="product-tabs" id="productTabs"></div>
+      <div class="products-grid" id="productsGrid"></div>
+      <div class="empty-state products-empty" id="productsEmpty" hidden></div>
+    </section>
+
+    <div class="xhs-strip" id="productsXhsStrip"></div>
+  </main>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="site-content.js"></script>
+  <script src="site.js"></script>
+  <script src="products-data.js"></script>
+  <script>
+    (function () {
+      var site = window.weiyiSite;
+      var pageContent = site.getPageContent('products');
+      var productsGrid = document.getElementById('productsGrid');
+      var productsEmpty = document.getElementById('productsEmpty');
+      var productTabs = document.getElementById('productTabs');
+      var productCatalog = window.weiyiProductCatalog || { categories: [] };
+      var categoryConfig = Array.isArray(productCatalog.categories)
+        ? productCatalog.categories
+        : [];
+      var categoryMap = {};
+
+      site.renderHeader('products');
+      site.renderFooter();
+      site.renderXhsStrip('productsXhsStrip', pageContent.xhs);
+      site.setDocumentTitle(pageContent.title);
+      site.setText('productsBannerKicker', pageContent.bannerKicker || '');
+      site.setText('productsBannerTitle', pageContent.bannerTitle || '');
+      site.setText('productsBannerCopy', pageContent.bannerCopy || '');
+      document.getElementById('productsBannerKicker').hidden = !pageContent.bannerKicker;
+      document.getElementById('productsBannerCopy').hidden = !pageContent.bannerCopy;
+
+      categoryConfig.forEach(function (category) {
+        categoryMap[category.key] = category;
+      });
+
+      function buildCategoryPath(category) {
+        return 'images/products/' + category.folder;
+      }
+
+      function createTabButton(key, label, isActive) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+
+        if (isActive) {
+          button.classList.add('active');
+        }
+
+        button.addEventListener('click', function () {
+          window.filterProducts(key, button);
+        });
+
+        return button;
+      }
+
+      function buildTabs() {
+        if (productCatalog.showAllTab !== false) {
+          productTabs.appendChild(
+            createTabButton('all', pageContent.allTabLabel || '全部', true)
+          );
+        }
+
+        categoryConfig.forEach(function (category, index) {
+          var isActive = productCatalog.showAllTab === false && index === 0;
+          productTabs.appendChild(createTabButton(category.key, category.label, isActive));
+        });
+      }
+
+      function setEmptyMessage(category) {
+        if (category === 'all') {
+          productsEmpty.textContent = pageContent.emptyAllMessage || '';
+          return;
+        }
+
+        var currentCategory = categoryMap[category];
+        var folder = currentCategory ? buildCategoryPath(currentCategory) : 'images/products/';
+        productsEmpty.textContent = (pageContent.emptyCategoryMessage || '').replace('{folder}', folder);
+      }
+
+      function applyFilter(category) {
+        var visibleCount = 0;
+
+        document.querySelectorAll('#productsGrid .product-item').forEach(function (item) {
+          var shouldShow = category === 'all' || item.dataset.category === category;
+          item.hidden = !shouldShow;
+
+          if (shouldShow) {
+            visibleCount += 1;
+          }
+        });
+
+        setEmptyMessage(category);
+        productsEmpty.hidden = visibleCount > 0;
+      }
+
+      function createProductCard(category, product, imageSrc) {
+        var item = document.createElement('div');
+        item.className = 'product-item';
+        item.dataset.category = category;
+        var targetHref = site.getProductLink(product);
+
+        var thumb = document.createElement('div');
+        thumb.className = 'product-item-thumb';
+
+        var img = document.createElement('img');
+        img.src = imageSrc;
+        img.alt = product.alt || product.title;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        thumb.appendChild(img);
+
+        if (product.badge) {
+          var badge = document.createElement('span');
+          badge.className = 'product-badge';
+          badge.textContent = product.badge;
+          thumb.appendChild(badge);
+        }
+
+        var title = document.createElement('h3');
+        title.textContent = product.title;
+
+        var description = document.createElement('p');
+        description.textContent = product.description;
+
+        item.appendChild(thumb);
+        item.appendChild(title);
+        item.appendChild(description);
+
+        function activateCard(event) {
+          if (event.target.closest('a')) {
+            return;
+          }
+
+          window.location.href = targetHref;
+        }
+
+        item.addEventListener('click', activateCard);
+        site.makePressableCard(item, activateCard);
+
+        var action = document.createElement('a');
+        action.className = 'product-link';
+        action.href = targetHref;
+        action.textContent = product.ctaLabel || pageContent.defaultCtaLabel || '查看详情';
+        item.appendChild(action);
+
+        return item;
+      }
+
+      window.filterProducts = function (category, button) {
+        document.querySelectorAll('#productTabs button').forEach(function (item) {
+          item.classList.remove('active');
+        });
+
+        button.classList.add('active');
+        applyFilter(category);
+      };
+
+      Promise.all(categoryConfig.map(function (config) {
+        var products = Array.isArray(config.products) ? config.products : [];
+        var enabledProducts = products.filter(function (product) {
+          return product && product.enabled !== false && product.image && product.title;
+        });
+        var imageNames = enabledProducts.map(function (product) {
+          return product.image;
+        });
+
+        return window.weiyiAssets.loadNamedImages(
+          buildCategoryPath(config),
+          imageNames
+        ).then(function (images) {
+          var imageMap = {};
+
+          images.forEach(function (image) {
+            imageMap[image.fileName] = image.src;
+          });
+
+          return enabledProducts.map(function (product) {
+            var resolvedSrc = imageMap[product.image];
+
+            if (!resolvedSrc) {
+              return null;
+            }
+
+            return {
+              category: config.key,
+              product: product,
+              imageSrc: resolvedSrc
+            };
+          }).filter(Boolean);
+        });
+      })).then(function (results) {
+        results.forEach(function (items) {
+          items.forEach(function (item) {
+            productsGrid.appendChild(createProductCard(item.category, item.product, item.imageSrc));
+          });
+        });
+
+        buildTabs();
+
+        if (productCatalog.showAllTab === false && categoryConfig.length) {
+          applyFilter(categoryConfig[0].key);
+        } else {
+          applyFilter('all');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

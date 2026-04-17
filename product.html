@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产品详情 | WEIYI 唯意</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav" id="siteHeader"></header>
+
+  <main>
+    <div class="page-banner page-banner-minimal">
+      <div class="page-banner-inner">
+        <p class="page-banner-kicker" id="productDetailBannerKicker" hidden></p>
+        <h2 id="productDetailBannerTitle"></h2>
+        <p class="page-banner-copy" id="productDetailBannerCopy" hidden></p>
+      </div>
+    </div>
+
+    <section class="product-detail-section">
+      <div class="empty-state product-detail-empty" id="productNotFound" hidden></div>
+
+      <div class="product-detail-layout" id="productDetailLayout" hidden>
+        <div class="product-detail-media">
+          <div class="product-detail-main-image" id="productDetailImageWrap">
+            <img id="productDetailImage" src="" alt="" hidden />
+            <div class="product-detail-image-fallback" id="productDetailImageFallback" hidden></div>
+          </div>
+          <div class="product-detail-thumbs" id="productDetailThumbs" hidden></div>
+        </div>
+
+        <div class="product-detail-panel">
+          <span class="product-detail-badge" id="productDetailBadge" hidden></span>
+          <p class="product-detail-category" id="productDetailCategory"></p>
+          <h1 class="product-detail-title" id="productDetailTitle"></h1>
+          <p class="product-detail-description" id="productDetailDescription"></p>
+
+          <div class="product-detail-actions">
+            <a class="product-detail-button product-detail-button-primary" id="productPrimaryAction" href=""></a>
+            <a class="product-detail-button" id="productBackAction" href="products.html"></a>
+          </div>
+
+          <div class="product-detail-meta" id="productDetailMeta"></div>
+        </div>
+      </div>
+
+      <div class="product-detail-content" id="productDetailContent" hidden></div>
+    </section>
+
+    <section class="products-section product-related-section" id="productRelatedSection" hidden>
+      <div class="section-head">
+        <h2 id="productRelatedHeading"></h2>
+        <span id="productRelatedSubheading"></span>
+      </div>
+      <div class="products-grid" id="productRelatedGrid"></div>
+    </section>
+
+    <div class="xhs-strip" id="productDetailXhsStrip"></div>
+  </main>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="site-content.js"></script>
+  <script src="site.js"></script>
+  <script src="products-data.js"></script>
+  <script>
+    (function () {
+      var site = window.weiyiSite;
+      var pageContent = site.getPageContent('productDetail');
+      var params = new URLSearchParams(window.location.search);
+      var productId = params.get('product') || params.get('id');
+      var entry = site.getProductById(productId);
+      var notFound = document.getElementById('productNotFound');
+      var layout = document.getElementById('productDetailLayout');
+      var content = document.getElementById('productDetailContent');
+      var relatedSection = document.getElementById('productRelatedSection');
+      var relatedGrid = document.getElementById('productRelatedGrid');
+      var thumbs = document.getElementById('productDetailThumbs');
+      var image = document.getElementById('productDetailImage');
+      var imageFallback = document.getElementById('productDetailImageFallback');
+
+      site.renderHeader('products');
+      site.renderFooter();
+      site.renderXhsStrip('productDetailXhsStrip', pageContent.xhs);
+      site.setText('productRelatedHeading', pageContent.relatedHeading || '');
+      site.setText('productRelatedSubheading', pageContent.relatedSubheading || '');
+
+      function buildProductImagePath(category, fileName) {
+        return window.weiyiAssets.buildAssetPath('images/products/' + category.folder, fileName);
+      }
+
+      function collectGalleryFiles(product, detail) {
+        var unique = {};
+        var files = [detail.image, product.image]
+          .concat(Array.isArray(detail.gallery) ? detail.gallery : [])
+          .filter(Boolean);
+
+        return files.filter(function (fileName) {
+          if (unique[fileName]) {
+            return false;
+          }
+
+          unique[fileName] = true;
+          return true;
+        });
+      }
+
+      function createMetaItem(label, value) {
+        var item = document.createElement('div');
+        item.className = 'product-detail-meta-item';
+
+        var labelElement = document.createElement('label');
+        labelElement.textContent = label;
+
+        var valueElement = document.createElement('p');
+        valueElement.textContent = value;
+
+        item.appendChild(labelElement);
+        item.appendChild(valueElement);
+        return item;
+      }
+
+      function appendMetaItem(label, value) {
+        if (!label || !value) {
+          return;
+        }
+
+        document.getElementById('productDetailMeta').appendChild(createMetaItem(label, value));
+      }
+
+      function renderBlockContent(block, value) {
+        if (Array.isArray(value)) {
+          var list = document.createElement('ul');
+          list.className = 'product-detail-list';
+
+          value.forEach(function (item) {
+            var li = document.createElement('li');
+            li.textContent = item;
+            list.appendChild(li);
+          });
+
+          block.appendChild(list);
+          return;
+        }
+
+        var paragraph = document.createElement('p');
+        paragraph.textContent = value;
+        block.appendChild(paragraph);
+      }
+
+      function createDetailBlock(title, value) {
+        var block = document.createElement('div');
+        block.className = 'product-detail-block';
+
+        var heading = document.createElement('h3');
+        heading.textContent = title;
+        block.appendChild(heading);
+
+        renderBlockContent(block, value);
+        return block;
+      }
+
+      function createRelatedCard(relatedEntry, imageSrc) {
+        var product = relatedEntry.product;
+        var item = document.createElement('div');
+        item.className = 'product-item';
+
+        function activateCard(event) {
+          if (event.target.closest('a')) {
+            return;
+          }
+
+          window.location.href = site.getProductLink(product);
+        }
+
+        item.addEventListener('click', activateCard);
+        site.makePressableCard(item, activateCard);
+
+        var thumb = document.createElement('div');
+        thumb.className = 'product-item-thumb';
+
+        var img = document.createElement('img');
+        img.src = imageSrc;
+        img.alt = product.alt || product.title;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        thumb.appendChild(img);
+
+        if (product.badge) {
+          var badge = document.createElement('span');
+          badge.className = 'product-badge';
+          badge.textContent = product.badge;
+          thumb.appendChild(badge);
+        }
+
+        var title = document.createElement('h3');
+        title.textContent = product.title;
+
+        var description = document.createElement('p');
+        description.textContent = product.description;
+
+        var action = document.createElement('a');
+        action.className = 'product-link';
+        action.href = site.getProductLink(product);
+        action.textContent = product.ctaLabel || '查看详情';
+
+        item.appendChild(thumb);
+        item.appendChild(title);
+        item.appendChild(description);
+        item.appendChild(action);
+        return item;
+      }
+
+      function renderNotFound() {
+        site.setDocumentTitle(pageContent.notFoundTitle + (pageContent.titleSuffix || ''));
+        site.setText('productDetailBannerKicker', pageContent.bannerKicker || '');
+        site.setText('productDetailBannerTitle', pageContent.notFoundTitle || '');
+        site.setText('productDetailBannerCopy', pageContent.notFoundMessage || '');
+        document.getElementById('productDetailBannerKicker').hidden = !pageContent.bannerKicker;
+        document.getElementById('productDetailBannerCopy').hidden = false;
+        notFound.hidden = false;
+        notFound.textContent = pageContent.notFoundMessage || '';
+
+        var backLink = document.createElement('a');
+        backLink.href = 'products.html';
+        backLink.className = 'product-detail-inline-link';
+        backLink.textContent = pageContent.backToProductsLabel || '返回产品展示';
+        notFound.appendChild(document.createElement('br'));
+        notFound.appendChild(backLink);
+      }
+
+      function renderGallery(category, product, detail) {
+        var files = collectGalleryFiles(product, detail);
+
+        return Promise.all(files.map(function (fileName) {
+          return window.weiyiAssets.probeImage(buildProductImagePath(category, fileName)).then(function (src) {
+            if (!src) {
+              return null;
+            }
+
+            return {
+              fileName: fileName,
+              src: src
+            };
+          });
+        })).then(function (items) {
+          var galleryItems = items.filter(Boolean);
+
+          if (!galleryItems.length) {
+            image.hidden = true;
+            imageFallback.hidden = false;
+            imageFallback.textContent = pageContent.galleryEmptyMessage
+              || ('请将产品图放入 images/products/' + category.folder + '/');
+            thumbs.hidden = true;
+            thumbs.innerHTML = '';
+            return;
+          }
+
+          imageFallback.hidden = true;
+          image.hidden = false;
+
+          function setActive(index) {
+            var current = galleryItems[index];
+            image.src = current.src;
+            image.alt = product.alt || product.title || '';
+            image.loading = 'eager';
+            image.decoding = 'async';
+
+            thumbs.querySelectorAll('button').forEach(function (button, buttonIndex) {
+              button.classList.toggle('active', buttonIndex === index);
+              button.setAttribute('aria-pressed', buttonIndex === index ? 'true' : 'false');
+            });
+          }
+
+          if (galleryItems.length === 1) {
+            thumbs.hidden = true;
+            thumbs.innerHTML = '';
+            setActive(0);
+            return;
+          }
+
+          thumbs.hidden = false;
+          thumbs.innerHTML = '';
+
+          galleryItems.forEach(function (item, index) {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'product-detail-thumb';
+            button.setAttribute('aria-label', (product.title || '产品') + ' 图片 ' + (index + 1));
+            button.setAttribute('aria-pressed', 'false');
+
+            var thumbImage = document.createElement('img');
+            thumbImage.src = item.src;
+            thumbImage.alt = product.alt || product.title || '';
+            thumbImage.loading = 'lazy';
+            thumbImage.decoding = 'async';
+            button.appendChild(thumbImage);
+
+            button.addEventListener('click', function () {
+              setActive(index);
+            });
+
+            thumbs.appendChild(button);
+          });
+
+          setActive(0);
+        });
+      }
+
+      if (!entry) {
+        renderNotFound();
+        return;
+      }
+
+      var category = entry.category;
+      var product = entry.product;
+      var detail = product.detail || {};
+      var fallback = pageContent.fallback || {};
+      var detailSections = pageContent.detailSections || {};
+      var badge = document.getElementById('productDetailBadge');
+      var categoryText = document.getElementById('productDetailCategory');
+      var title = document.getElementById('productDetailTitle');
+      var description = document.getElementById('productDetailDescription');
+      var primaryAction = document.getElementById('productPrimaryAction');
+      var backAction = document.getElementById('productBackAction');
+      var blocks = [
+        {
+          title: detailSections.summary && detailSections.summary.title,
+          value: detail.summary || fallback.summary
+        },
+        {
+          title: detailSections.story && detailSections.story.title,
+          value: detail.story || fallback.story
+        },
+        {
+          title: detailSections.materials && detailSections.materials.title,
+          value: detail.materials || fallback.materials
+        },
+        {
+          title: detailSections.care && detailSections.care.title,
+          value: detail.care || fallback.care
+        }
+      ];
+
+      site.setDocumentTitle((product.title || pageContent.notFoundTitle) + (pageContent.titleSuffix || ''));
+      site.setText('productDetailBannerKicker', category.label || pageContent.bannerKicker || '');
+      site.setText('productDetailBannerTitle', product.title || '');
+      site.setText('productDetailBannerCopy', detail.story || product.description || pageContent.bannerCopy || '');
+      document.getElementById('productDetailBannerKicker').hidden = !(category.label || pageContent.bannerKicker);
+      document.getElementById('productDetailBannerCopy').hidden = !(detail.story || product.description || pageContent.bannerCopy);
+      layout.hidden = false;
+      content.hidden = false;
+
+      categoryText.textContent = category.label || '';
+      title.textContent = product.title || '';
+      description.textContent = detail.summary || product.description || fallback.summary || '';
+
+      if (product.badge) {
+        badge.hidden = false;
+        badge.textContent = product.badge;
+      }
+
+      primaryAction.href = product.href || pageContent.defaultActionHref || 'contact.html';
+      primaryAction.textContent = product.href
+        ? (product.ctaLabel || pageContent.defaultActionLabel || '联系咨询')
+        : (pageContent.defaultActionLabel || '联系咨询');
+
+      backAction.href = 'products.html';
+      backAction.textContent = pageContent.backToProductsLabel || '返回产品展示';
+
+      appendMetaItem(pageContent.fields.category, category.label || '');
+      appendMetaItem(pageContent.fields.id, product.id || '');
+      appendMetaItem(pageContent.fields.price, product.price || '');
+      appendMetaItem(pageContent.fields.status, product.status || '');
+      appendMetaItem(pageContent.fields.materialsLabel, product.materialsLabel || '');
+      appendMetaItem(pageContent.fields.sizeLabel, product.sizeLabel || '');
+
+      if (product.badge) {
+        appendMetaItem(pageContent.fields.badge, product.badge);
+      }
+
+      appendMetaItem(pageContent.fields.image, detail.image || product.image || '');
+
+      blocks.forEach(function (block) {
+        if (!block.title || !block.value) {
+          return;
+        }
+
+        content.appendChild(createDetailBlock(block.title, block.value));
+      });
+
+      renderGallery(category, product, detail);
+
+      Promise.all(site.getRelatedProducts(product.id, 3).map(function (relatedEntry) {
+        var relatedDetail = relatedEntry.product.detail || {};
+        var relatedFile = relatedDetail.image || relatedEntry.product.image;
+        var relatedImagePath = buildProductImagePath(relatedEntry.category, relatedFile);
+
+        return window.weiyiAssets.probeImage(relatedImagePath).then(function (src) {
+          if (!src) {
+            return null;
+          }
+
+          return createRelatedCard(relatedEntry, src);
+        });
+      })).then(function (cards) {
+        cards.filter(Boolean).forEach(function (card) {
+          relatedGrid.appendChild(card);
+        });
+
+        relatedSection.hidden = relatedGrid.children.length === 0;
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WEIYI 唯意 | 官方网站</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav" id="siteHeader"></header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg">
+        <img id="heroImage" src="" alt="" />
+      </div>
+      <div class="hero-content">
+        <h1 id="heroTitle"></h1>
+        <p id="heroSlogan"></p>
+      </div>
+    </section>
+
+    <section class="brand-intro">
+      <p id="brandIntroText"></p>
+    </section>
+
+    <section class="carousel-section">
+      <div class="section-head">
+        <h2 id="carouselHeading"></h2>
+        <span id="carouselSubheading"></span>
+      </div>
+
+      <div class="carousel-wrap">
+        <div class="carousel-track" id="carouselTrack"></div>
+        <div class="empty-state empty-state-inline" id="carouselEmpty" hidden></div>
+      </div>
+
+      <div class="carousel-controls" id="carouselControls">
+        <button class="carousel-btn" id="prevBtn" type="button">&#8592;</button>
+        <button class="carousel-btn" id="nextBtn" type="button">&#8594;</button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </section>
+
+    <section class="picks-section">
+      <div class="section-head">
+        <h2 id="picksHeading"></h2>
+        <span id="picksSubheading"></span>
+      </div>
+
+      <div class="picks-grid" id="picksGrid"></div>
+      <div class="empty-state picks-empty" id="picksEmpty" hidden></div>
+    </section>
+
+    <div class="xhs-strip" id="homeXhsStrip"></div>
+  </main>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="site-content.js"></script>
+  <script src="site.js"></script>
+  <script src="products-data.js"></script>
+  <script>
+    (function () {
+      var site = window.weiyiSite;
+      var pageContent = site.getPageContent('home');
+      var heroConfig = pageContent.hero || {};
+      var carouselConfig = pageContent.carousel || {};
+      var picksConfig = pageContent.picks || {};
+      var featuredProducts = site.getFeaturedProducts();
+      var carouselTrack = document.getElementById('carouselTrack');
+      var carouselEmpty = document.getElementById('carouselEmpty');
+      var carouselControls = document.getElementById('carouselControls');
+      var dotsWrap = document.getElementById('carouselDots');
+      var prevBtn = document.getElementById('prevBtn');
+      var nextBtn = document.getElementById('nextBtn');
+      var picksGrid = document.getElementById('picksGrid');
+      var picksEmpty = document.getElementById('picksEmpty');
+      var current = 0;
+      var total = 0;
+      var autoPlay = null;
+
+      site.renderHeader('home');
+      site.renderFooter();
+      site.renderXhsStrip('homeXhsStrip', pageContent.xhs);
+      site.setDocumentTitle(pageContent.title);
+      site.setLines('heroTitle', heroConfig.headingLines || []);
+      site.setText('heroSlogan', heroConfig.slogan || '');
+      site.setParagraphWithBreaks('brandIntroText', pageContent.intro || []);
+      site.setText('carouselHeading', carouselConfig.heading || '');
+      site.setText('carouselSubheading', carouselConfig.subheading || '');
+      site.setText('carouselEmpty', carouselConfig.emptyMessage || '');
+      site.setText('picksHeading', picksConfig.heading || '');
+      site.setText('picksSubheading', picksConfig.subheading || '');
+      site.setText('picksEmpty', picksConfig.emptyMessage || '');
+
+      var heroImage = document.getElementById('heroImage');
+      if (heroImage) {
+        heroImage.src = heroConfig.image || '';
+        heroImage.alt = heroConfig.imageAlt || '';
+        heroImage.loading = 'eager';
+        heroImage.decoding = 'async';
+      }
+
+      prevBtn.setAttribute('aria-label', '上一张轮播图');
+      nextBtn.setAttribute('aria-label', '下一张轮播图');
+
+      function toggleEmptyState(element, isVisible, displayMode) {
+        element.hidden = !isVisible;
+        element.style.display = isVisible ? displayMode : 'none';
+      }
+
+      function updateDots() {
+        var dots = dotsWrap.querySelectorAll('button');
+        dots.forEach(function (button, index) {
+          button.classList.toggle('active', index === current);
+        });
+      }
+
+      function goTo(index) {
+        current = (index + total) % total;
+        carouselTrack.style.transform = 'translateX(-' + (current * 100) + '%)';
+        updateDots();
+      }
+
+      function buildCarousel(images) {
+        if (!images.length) {
+          toggleEmptyState(carouselEmpty, true, 'flex');
+          carouselControls.hidden = true;
+          return;
+        }
+
+        toggleEmptyState(carouselEmpty, false, 'flex');
+
+        images.forEach(function (image) {
+          var item = document.createElement('div');
+          item.className = 'carousel-item';
+
+          var img = document.createElement('img');
+          img.src = image.src;
+          img.alt = (carouselConfig.imageAltPrefix || '首页轮播 ') + image.label;
+          img.loading = image.index === 1 ? 'eager' : 'lazy';
+          img.decoding = 'async';
+
+          item.appendChild(img);
+          carouselTrack.appendChild(item);
+        });
+
+        total = images.length;
+
+        images.forEach(function (_, index) {
+          var dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = index === 0 ? 'active' : '';
+          dot.setAttribute('aria-label', '切换到第 ' + (index + 1) + ' 张轮播图');
+          dot.addEventListener('click', function () {
+            goTo(index);
+          });
+          dotsWrap.appendChild(dot);
+        });
+
+        prevBtn.addEventListener('click', function () {
+          goTo(current - 1);
+        });
+
+        nextBtn.addEventListener('click', function () {
+          goTo(current + 1);
+        });
+
+        carouselControls.hidden = total <= 1;
+
+        if (total > 1) {
+          autoPlay = window.setInterval(function () {
+            goTo(current + 1);
+          }, 4000);
+        }
+      }
+
+      function loadFeaturedPickImages() {
+        return Promise.all(featuredProducts.map(function (entry) {
+          var category = entry.category || {};
+          var product = entry.product || {};
+          var featured = entry.product.featured || {};
+          var imageFile = featured.image || window.weiyiAssets.buildImageFileName(featured.order);
+          var homeImagePath = window.weiyiAssets.buildAssetPath('images/home/picks', imageFile);
+          var productImagePath = window.weiyiAssets.buildAssetPath(
+            'images/products/' + category.folder,
+            product.image
+          );
+
+          return window.weiyiAssets.probeImage(homeImagePath).then(function (resolvedHomeSrc) {
+            if (resolvedHomeSrc) {
+              return resolvedHomeSrc;
+            }
+
+            return window.weiyiAssets.probeImage(productImagePath);
+          }).then(function (resolvedSrc) {
+            if (!resolvedSrc) {
+              return null;
+            }
+
+            return {
+              category: category,
+              product: product,
+              featured: featured,
+              imageFile: imageFile,
+              imageSrc: resolvedSrc
+            };
+          });
+        })).then(function (items) {
+          return items.filter(Boolean);
+        });
+      }
+
+      function buildPicks(items) {
+        if (!items.length) {
+          toggleEmptyState(picksEmpty, true, 'block');
+          return;
+        }
+
+        toggleEmptyState(picksEmpty, false, 'block');
+
+        items.forEach(function (item) {
+          var product = item.product;
+          var featured = item.featured || {};
+          var targetHref = featured.href || site.getProductLink(product) || picksConfig.defaultHref || 'products.html';
+          var card = document.createElement('div');
+          card.className = 'pick-card';
+
+          function activateCard() {
+            window.location.href = targetHref;
+          }
+
+          card.addEventListener('click', activateCard);
+          site.makePressableCard(card, activateCard);
+
+          var thumb = document.createElement('div');
+          thumb.className = 'pick-card-thumb';
+
+          var img = document.createElement('img');
+          img.src = item.imageSrc;
+          img.alt = featured.alt || product.alt || product.title || '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          thumb.appendChild(img);
+
+          var title = document.createElement('h3');
+          title.textContent = featured.title || product.title || '';
+
+          var description = document.createElement('p');
+          description.textContent = featured.description || product.description || picksConfig.defaultDescription || '';
+
+          card.appendChild(thumb);
+          card.appendChild(title);
+          card.appendChild(description);
+          picksGrid.appendChild(card);
+        });
+      }
+
+      toggleEmptyState(carouselEmpty, false, 'flex');
+      toggleEmptyState(picksEmpty, false, 'block');
+
+      Promise.all([
+        window.weiyiAssets.loadSequentialImages('images/home/carousel', 20),
+        loadFeaturedPickImages()
+      ]).then(function (results) {
+        buildCarousel(results[0]);
+        buildPicks(results[1]);
+      });
+
+      window.addEventListener('beforeunload', function () {
+        if (autoPlay) {
+          window.clearInterval(autoPlay);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

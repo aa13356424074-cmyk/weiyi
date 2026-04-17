@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>品牌故事 | WEIYI 唯意</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav" id="siteHeader"></header>
+
+  <main>
+    <div class="page-banner page-banner-about">
+      <div class="page-banner-inner">
+        <p class="page-banner-kicker" id="aboutBannerKicker"></p>
+        <h2 id="aboutBannerTitle"></h2>
+        <p class="page-banner-copy" id="aboutBannerCopy"></p>
+        <div class="page-banner-marks" id="aboutBannerMarks"></div>
+      </div>
+    </div>
+
+    <div class="about-body" id="aboutBody"></div>
+
+    <div class="slogan-block">
+      <h2 id="aboutSloganHeading"></h2>
+      <p id="aboutSloganSubheading"></p>
+    </div>
+
+    <div class="xhs-strip" id="aboutXhsStrip"></div>
+  </main>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="site-content.js"></script>
+  <script src="site.js"></script>
+  <script>
+    (function () {
+      var site = window.weiyiSite;
+      var pageContent = site.getPageContent('about');
+      var aboutBody = document.getElementById('aboutBody');
+      var aboutBannerMarks = document.getElementById('aboutBannerMarks');
+      var sloganConfig = pageContent.sloganBlock || {};
+
+      site.renderHeader('about');
+      site.renderFooter();
+      site.renderXhsStrip('aboutXhsStrip', pageContent.xhs);
+      site.setDocumentTitle(pageContent.title);
+      site.setText('aboutBannerKicker', pageContent.bannerKicker || '');
+      site.setText('aboutBannerTitle', pageContent.bannerTitle || '');
+      site.setText('aboutBannerCopy', pageContent.bannerCopy || '');
+      site.setLines('aboutSloganHeading', sloganConfig.headingLines || []);
+      site.setText('aboutSloganSubheading', sloganConfig.subheading || '');
+
+      site.clearElement(aboutBody);
+      site.clearElement(aboutBannerMarks);
+
+      (Array.isArray(pageContent.bannerMarks) ? pageContent.bannerMarks : []).forEach(function (mark) {
+        var badge = document.createElement('span');
+        badge.textContent = mark;
+        aboutBannerMarks.appendChild(badge);
+      });
+
+      (Array.isArray(pageContent.columns) ? pageContent.columns : []).forEach(function (column, index) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'about-col';
+        wrapper.setAttribute('data-index', column.index || String(index + 1).padStart(2, '0'));
+
+        var meta = document.createElement('div');
+        meta.className = 'about-col-meta';
+
+        var heading = document.createElement('h3');
+        heading.textContent = column.heading || '';
+        meta.appendChild(heading);
+
+        if (column.note) {
+          var note = document.createElement('span');
+          note.className = 'about-col-note';
+          note.textContent = column.note;
+          meta.appendChild(note);
+        }
+
+        wrapper.appendChild(meta);
+
+        if (column.lead) {
+          var lead = document.createElement('p');
+          lead.className = 'about-col-lead';
+          lead.textContent = column.lead;
+          wrapper.appendChild(lead);
+        }
+
+        (Array.isArray(column.paragraphs) ? column.paragraphs : []).forEach(function (paragraph) {
+          var text = document.createElement('p');
+          text.textContent = paragraph;
+          wrapper.appendChild(text);
+        });
+
+        if (column.footnote) {
+          var footnote = document.createElement('p');
+          footnote.className = 'about-col-footnote';
+          footnote.textContent = column.footnote;
+          wrapper.appendChild(footnote);
+        }
+
+        aboutBody.appendChild(wrapper);
+      });
+    })();
+  </script>
+</body>
+</html>
